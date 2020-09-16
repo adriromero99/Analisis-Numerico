@@ -1,5 +1,5 @@
-# Analisis-Numerico
-Proyectos grupales de Analisis Numérico en Python
+# Análisis Numérico
+Proyectos grupales de Análisis Numérico en Python
 
  Realizaron este proyecto:
   * De Angelis Riva, Lukas 
