@@ -1,6 +1,14 @@
 # Analisis-Numerico
-Proyectos de Analisis Numérico en Python
+Proyectos grupales de Analisis Numérico en Python
 
+ Realizaron este proyecto:
+  *De Angelis Riva, Lukas 
+  *Gomez, Joaquín 
+  *Grassano, Bruno
+  *Guillemi, Andrés 
+  *Rodriguez, Ezequiel 
+  *Romero, Adrián
+  
 # Trabajo práctico 1
   * Se comparan la velocidad de convergencia de los métodos iterativos para resolver ecuaciones.
 
