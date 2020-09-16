@@ -1,0 +1,649 @@
+\documentclass[titlepage,a4paper]{article}
+%¿como llegaste a esto si te estamos entregando un PDF?, igualmente, es un muy lindo informe y yo creo que merece un 10 por el esfuerzo y la prolijidad
+%el liberalismo es la solución
+%ANDY LA CONCHA DE TU MADRE
+
+% cuando lo terminemos acomodamos la tabla
+\usepackage{a4wide}
+\usepackage[colorlinks=true,linkcolor=black,urlcolor=blue,bookmarksopen=true]{hyperref}
+\usepackage{bookmark}
+\usepackage{fancyhdr}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{multicol}
+%liberalismo
+
+%liberalismo
+\pagestyle{fancy} % Encabezado y pie de página
+\fancyhf{}
+\fancyhead[L]{TP1 - Grupo 1}
+\fancyhead[R]{Análisis Numérico - FIUBA}
+\renewcommand{\headrulewidth}{0.4pt}
+\fancyfoot[C]{\thepage}
+\renewcommand{\footrulewidth}{0.4pt}
+\usepackage[utf8]{inputenc}
+%viva perón liberal
+%abajo el comunismo
+
+\begin{document}
+\begin{titlepage} % Carátula
+	\hfill\includegraphics[width=6cm]{logofiuba.jpg}
+    \centering
+    \vfill
+    \Huge \textbf{Trabajo Práctico 1}
+    \vskip2cm
+    \Large [ 75.12 - 95.04 ] Análisis Numérico\\
+    Curso 5 \\ 
+    Primer cuatrimestre de 2020\\
+    \vfill
+    \begin{tabular}{ | l | l | } % completen con padron, LOL ya estaba completo
+      \hline
+        De Angelis Riva, Lukas & 103784 \\ \hline
+        Gomez, Joaquín & 103735 \\ \hline
+        Grassano, Bruno & 103855 \\ \hline
+        Guillemi, Andrés & 104006\\ \hline 
+        Rodriguez, Ezequiel & 103976 \\ \hline
+        Romero, Adrián & 103371 \\ \hline
+  	\end{tabular}
+    \vfill
+    \vfill
+    \vfill
+\end{titlepage}
+
+\tableofcontents % Índice general
+
+\newpage
+
+\section{Introducción}\label{sec:intro}
+En este trabajo práctico creamos un programa para la búsqueda de raíces de funciones a través de los siguientes métodos numéricos aprendidos en la materia:
+\begin{itemize}
+    \item Bisección
+    \item Newton-Raphson
+    \item Newton-Raphson modificado
+    \item Secante
+\end{itemize}
+
+
+Con este fin, primero graficamos las funciones en Geogebra para tener una idea sobre ellas, corroborando que los intervalos brindados en el enunciado eran válidos para los métodos. Luego, obtenemos las raíces y con la historia de los resultados pasamos a analizar los distintos métodos analizando los ordenes de convergencia, su conveniencia en tiempos de cómputo y error en el resultado.
+
+Para verificar los resultados, calculamos las raíces mediante la biblioteca de Python `SciPy`. De esta manera pudimos corroborar el correcto funcionamiento de las funciones programadas.
+
+\section{Objetivos}\label{sec:objetivos}
+El objetivo del trabajo práctico es obtener la raíz de las tres funciones dadas mediante los métodos numéricos indicados, para luego analizar el orden de convergencia P y la constante asintótica de cada método. $\lambda$
+
+
+\section{Gráficos de las funciones}\label{sec:graficosfun}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{funcion1.png}
+    \caption{\label{fig:f1}Gráfico correspondiente a la primera función en el intervalo [0;2].}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{funcion2.png}
+    \caption{\label{fig:f2}Gráfico correspondiente a la segunda función en el intervalo [0;2].}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{funcion3.png}
+    \caption{\label{fig:f3}Gráfico correspondiente a la tercera función en el intervalo [0;2].}
+\end{figure}
+
+\section{Búsqueda de raíces}\label{sec:busqueda_raices}
+
+\subsection{Bisección}\label{sec:biseccion}
+El método de bisección halla la raíz mediante la siguiente fórmula por métodos iterativos hasta que 
+$ |p_{n+1} - p_{n}| < \mbox{$\epsilon$} $ , tomando los límites iniciales de intervalo ${a_n}$ y ${b_n}$:
+
+\smallskip
+
+$\mbox{Sea }p_n = \frac{a_n+b_n}{2}\mbox{, entonces, en la siguiente iteración}$
+\begin{center}
+    $
+    \quad a_{n+1} =\left\{ \begin{array}{lcc}
+                 a_n & \mbox{si } f(a_n)\cdot f(r_n) <0 \\
+                 \\ p_n & \mbox{si } f(a_n)\cdot f(r_n) > 0 \\
+                 \end{array}
+       \right. 
+    $
+    $
+    \quad b_{n+1} =\left\{ \begin{array}{lcc}
+                 b_n & \mbox{ si } f(b_n)\cdot f(r_n) < 0 \\
+                 \\p_n & \mbox{ si } f(b_n)\cdot f(r_n) > 0 \\
+                 \end{array}
+       \right.
+    $
+\end{center}
+\smallskip
+Los resultados obtenidos fueron los siguientes:
+\\Para las tres funciones, observamos que la cota 1*10$^-5$ se alcanza en la iteración 17.
+\subsubsection{Primera función}\label{sec:bis1}
+\begin{center}
+    \begin{tabular}{| c | l | c | c | c |}
+    \hline
+            Iteración & Raíz & Error absoluto & P & $\lambda$ \\ \hline
+    0      & 1.0  &  1.0000000000000  &  -  &  - \\
+    1      & 1.5  &  0.5000000000000  &  -  &  0.5 \\
+    2      & 1.25  &  0.2500000000000  &  1.0  &  0.5 \\
+    3      & 1.375  &  0.1250000000000  &  1.0  &  0.5 \\
+    4      & 1.4375  &  0.0625000000000  &  1.0  &  0.5 \\
+    5      & 1.40625  &  0.0312500000000  &  1.0  &  0.5 \\
+    6      & 1.421875  &  0.0156250000000  &  1.0  &  0.5 \\
+    7      & 1.4140625  &  0.0078125000000  &  1.0  &  0.5 \\
+    8      & 1.41796875  &  0.0039062500000  &  1.0  &  0.5 \\
+    9      & 1.416015625  &  0.0019531250000  &  1.0  &  0.5 \\
+    10      & 1.4150390625  &  0.0009765625000  &  1.0  &  0.5 \\
+    11      & 1.41455078125  &  0.0004882812500  &  1.0  &  0.5 \\
+    12      & 1.414306640625  &  0.0002441406250  &  1.0  &  0.5 \\
+    13      & 1.4141845703125  &  0.0001220703125  &  1.0  &  0.5 \\
+    14      & 1.41424560546875  &  0.0000610351562  &  1.0  &  0.5 \\
+    15      & 1.414215087890625  &  0.0000305175781  &  1.0  &  0.5 \\
+    16      & 1.414199829101562  &  0.0000152587891  &  1.0  &  0.5 \\
+    17      & 1.414207458496093  &  0.0000076293945  &  1.0  &  0.5 \\
+    18      & 1.414211273193359  &  0.0000038146973  &  1.0  &  0.5 \\
+    19      & 1.414213180541992  &  0.0000019073486  &  1.0  &  0.5 \\
+    20      & 1.414214134216308  &  0.0000009536743  &  1.0  &  0.5 \\
+    21      & 1.414213657379150  &  0.0000004768372  &  1.0  &  0.5 \\
+    22      & 1.414213418960571  &  0.0000002384186  &  1.0  &  0.5 \\
+    23      & 1.414213538169860  &  0.0000001192093  &  1.0  &  0.5 \\
+    24      & 1.414213597774505  &  0.0000000596046  &  1.0  &  0.5 \\
+    25      & 1.414213567972183  &  0.0000000298023  &  1.0  &  0.5 \\
+    26      & 1.414213553071022  &  0.0000000149012  &  1.0  &  0.5 \\
+    27      & 1.414213560521602  &  0.0000000074506  &  1.0  &  0.5 \\
+    28      & 1.414213564246893  &  0.0000000037253  &  1.0  &  0.5 \\
+    29      & 1.414213562384247  &  0.0000000018626  &  1.0  &  0.5 \\
+    30      & 1.414213561452925  &  0.0000000009313  &  1.0  &  0.5 \\
+    31      & 1.414213561918586  &  0.0000000004657  &  1.0  &  0.5 \\
+    32      & 1.414213562151417  &  0.0000000002328  &  1.0  &  0.5 \\
+    33      & 1.414213562267832  &  0.0000000001164  &  1.0  &  0.5 \\
+    34      & 1.414213562326040  &  0.0000000000582  &  1.0  &  0.5 \\
+    35      & 1.414213562355144  &  0.0000000000291  &  1.0  &  0.5 \\
+    36      & 1.414213562369695  &  0.0000000000146  &  1.0  &  0.5 \\
+    37      & 1.414213562376971  &  0.0000000000073  &  1.0  &  0.5 \\
+    38      & 1.414213562373333  &  0.0000000000036  &  1.0  &  0.5 \\
+    39      & 1.414213562371514  &  0.0000000000018  &  1.0  &  0.5 \\
+    40      & 1.414213562372424  &  0.0000000000009  &  1.0  &  0.5 \\
+    41      & 1.414213562372879  &  0.0000000000005  &  1.0  &  0.5 \\
+    42      & 1.414213562373106  &  0.0000000000002  &  1.0  &  0.5 \\
+    43      & 1.414213562372992  &  0.0000000000001  &  1.0  &  0.5 \\
+    44      & 1.414213562373049  &  0.0000000000001  &  1.0  &  0.5 \\
+    
+    \hline
+    \end{tabular}
+\end{center}
+\clearpage
+
+
+\subsubsection{Segunda función}\label{sec:bis2}
+
+\begin{center}
+    \begin{tabular}{| c | l | c | c | c |}
+        \hline
+        Iteración & Raíz & Error absoluto & P & $\lambda$ \\ \hline
+    
+        0      & 1.0  &  1.0000000000000  &  -  &  - \\
+        1      & 1.5  &  0.5000000000000  &  -  &  0.5 \\
+        2      & 1.25  &  0.2500000000000  &  1.0  &  0.5 \\
+        3      & 1.125  &  0.1250000000000  &  1.0  &  0.5 \\
+        4      & 1.1875  &  0.0625000000000  &  1.0  &  0.5 \\
+        5      & 1.21875  &  0.0312500000000  &  1.0  &  0.5 \\
+        6      & 1.203125  &  0.0156250000000  &  1.0  &  0.5 \\
+        7      & 1.1953125  &  0.0078125000000  &  1.0  &  0.5 \\
+        8      & 1.19921875  &  0.0039062500000  &  1.0  &  0.5 \\
+        9      & 1.201171875  &  0.0019531250000  &  1.0  &  0.5 \\
+        10      & 1.2001953125  &  0.0009765625000  &  1.0  &  0.5 \\
+        11      & 1.19970703125  &  0.0004882812500  &  1.0  &  0.5 \\
+        12      & 1.199951171875  &  0.0002441406250  &  1.0  &  0.5 \\
+        13      & 1.2000732421875  &  0.0001220703125  &  1.0  &  0.5 \\
+        14      & 1.20001220703125  &  0.0000610351562  &  1.0  &  0.5 \\
+        15      & 1.199981689453125  &  0.0000305175781  &  1.0  &  0.5 \\
+        16      & 1.199996948242187  &  0.0000152587891  &  1.0  &  0.5 \\
+        17      & 1.200004577636718  &  0.0000076293945  &  1.0  &  0.5 \\
+        18      & 1.200008392333984  &  0.0000038146973  &  1.0  &  0.5 \\
+        19      & 1.200006484985351  &  0.0000019073486  &  1.0  &  0.5 \\
+        20      & 1.200005531311035  &  0.0000009536743  &  1.0  &  0.5 \\
+        21      & 1.200005054473877  &  0.0000004768372  &  1.0  &  0.5 \\
+        22      & 1.200005292892456  &  0.0000002384186  &  1.0  &  0.5 \\
+        23      & 1.200005173683166  &  0.0000001192093  &  1.0  &  0.5 \\
+        24      & 1.200005114078521  &  0.0000000596046  &  1.0  &  0.5 \\
+        25      & 1.200005143880844  &  0.0000000298023  &  1.0  &  0.5 \\
+        26      & 1.200005158782005  &  0.0000000149012  &  1.0  &  0.5 \\
+        27      & 1.200005151331424  &  0.0000000074506  &  1.0  &  0.5 \\
+        28      & 1.200005147606134  &  0.0000000037253  &  1.0  &  0.5 \\
+        29      & 1.200005145743489  &  0.0000000018626  &  1.0  &  0.5 \\
+        30      & 1.200005146674811  &  0.0000000009313  &  1.0  &  0.5 \\
+        31      & 1.200005147140473  &  0.0000000004657  &  1.0  &  0.5 \\
+        32      & 1.200005147373303  &  0.0000000002328  &  1.0  &  0.5 \\
+        33      & 1.200005147489719  &  0.0000000001164  &  1.0  &  0.5 \\
+        34      & 1.200005147547926  &  0.0000000000582  &  1.0  &  0.5 \\
+        35      & 1.200005147577030  &  0.0000000000291  &  1.0  &  0.5 \\
+        36      & 1.200005147562478  &  0.0000000000146  &  1.0  &  0.5 \\
+        37      & 1.200005147555202  &  0.0000000000073  &  1.0  &  0.5 \\
+        38      & 1.200005147558840  &  0.0000000000036  &  1.0  &  0.5 \\
+        39      & 1.200005147557021  &  0.0000000000018  &  1.0  &  0.5 \\
+        40      & 1.200005147556112  &  0.0000000000009  &  1.0  &  0.5 \\
+        41      & 1.200005147555657  &  0.0000000000005  &  1.0  &  0.5 \\
+        42      & 1.200005147555884  &  0.0000000000002  &  1.0  &  0.5 \\
+        \hline
+    \end{tabular}
+\end{center}
+\subsubsection{Tercera función}\label{sec:bis3}
+\begin{center}
+    \begin{tabular}{| c | l | c | c | c |}
+        \hline
+            Iteración & Raíz & Error absoluto & P & $\lambda$ \\ \hline
+        0      & 1.0  &  1.0000000000000  &  -  &  - \\
+        1      & 1.5  &  0.5000000000000  &  -  &  0.5 \\
+        2      & 1.25  &  0.2500000000000  &  1.0  &  0.5 \\
+        3      & 1.375  &  0.1250000000000  &  1.0  &  0.5 \\
+        4      & 1.4375  &  0.0625000000000  &  1.0  &  0.5 \\
+        5      & 1.46875  &  0.0312500000000  &  1.0  &  0.5 \\
+        6      & 1.484375  &  0.0156250000000  &  1.0  &  0.5 \\
+        7      & 1.4921875  &  0.0078125000000  &  1.0  &  0.5 \\
+        8      & 1.49609375  &  0.0039062500000  &  1.0  &  0.5 \\
+        9      & 1.498046875  &  0.0019531250000  &  1.0  &  0.5 \\
+        10      & 1.4990234375  &  0.0009765625000  &  1.0  &  0.5 \\
+        11      & 1.49951171875  &  0.0004882812500  &  1.0  &  0.5 \\
+        12      & 1.499755859375  &  0.0002441406250  &  1.0  &  0.5 \\
+        13      & 1.4998779296875  &  0.0001220703125  &  1.0  &  0.5 \\
+        14      & 1.49993896484375  &  0.0000610351562  &  1.0  &  0.5 \\
+        15      & 1.499969482421875  &  0.0000305175781  &  1.0  &  0.5 \\
+        16      & 1.499984741210937  &  0.0000152587891  &  1.0  &  0.5 \\
+        17      & 1.499992370605468  &  0.0000076293945  &  1.0  &  0.5 \\
+        18      & 1.499996185302734  &  0.0000038146973  &  1.0  &  0.5 \\
+        19      & 1.499998092651367  &  0.0000019073486  &  1.0  &  0.5 \\
+        20      & 1.499999046325683  &  0.0000009536743  &  1.0  &  0.5 \\
+        21      & 1.499999523162841  &  0.0000004768372  &  1.0  &  0.5 \\
+        22      & 1.499999761581421  &  0.0000002384186  &  1.0  &  0.5 \\
+        23      & 1.499999880790710  &  0.0000001192093  &  1.0  &  0.5 \\
+        24      & 1.499999940395355  &  0.0000000596046  &  1.0  &  0.5 \\
+        25      & 1.499999970197677  &  0.0000000298023  &  1.0  &  0.5 \\
+        26      & 1.499999985098838  &  0.0000000149012  &  1.0  &  0.5 \\
+        27      & 1.499999992549419  &  0.0000000074506  &  1.0  &  0.5 \\
+        28      & 1.499999996274709  &  0.0000000037253  &  1.0  &  0.5 \\
+        29      & 1.499999998137354  &  0.0000000018626  &  1.0  &  0.5 \\
+        30      & 1.499999999068677  &  0.0000000009313  &  1.0  &  0.5 \\
+        31      & 1.499999999534338  &  0.0000000004657  &  1.0  &  0.5 \\
+        32      & 1.499999999767169  &  0.0000000002328  &  1.0  &  0.5 \\
+        33      & 1.499999999883584  &  0.0000000001164  &  1.0  &  0.5 \\
+        34      & 1.499999999941792  &  0.0000000000582  &  1.0  &  0.5 \\
+        35      & 1.499999999970896  &  0.0000000000291  &  1.0  &  0.5 \\
+        36      & 1.499999999985448  &  0.0000000000146  &  1.0  &  0.5 \\
+        37      & 1.499999999992724  &  0.0000000000073  &  1.0  &  0.5 \\
+        38      & 1.499999999996362  &  0.0000000000036  &  1.0  &  0.5 \\
+        39      & 1.499999999998181  &  0.0000000000018  &  1.0  &  0.5 \\
+        40      & 1.499999999999090  &  0.0000000000009  &  1.0  &  0.5 \\
+        41      & 1.499999999999545  &  0.0000000000005  &  1.0  &  0.5 \\
+        42      & 1.499999999999772  &  0.0000000000002  &  1.0  &  0.5 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Newton-Raphson}\label{sec:NewtonRaphson}
+El método de Newton-Raphson halla la raíz a partir de una semilla inicial, iterando la siguiente sucesión
+$\quad p_{n} =p_{n-1}-\frac{f (p_{n-1})}{f'(p_{n-1})}$ hasta que 
+$p_{n}-p_{n-1} < \mbox{$\epsilon$}$
+
+
+Para el cálculo de las derivadas, utilizamos el método 'Derivative' de la biblioteca `Sympy`. De esa manera, logramos realizar un programa más escalable debido a que no es necesario conocer las derivadas de la función a evaluar.
+
+Los resultados obtenidos fueron los siguientes:
+
+\subsubsection{Primera función}\label{sec:NR1}
+En la iteración 3 se llega a la cota 1*10$^-5$
+\begin{center}
+\begin{tabular}{| c | l | c | c | c |}
+    \hline
+        Iteración & Raíz & Error absoluto & P & $\lambda$ \\ \hline
+0      & 1.3  &  -  &  -  &  - \\
+1      & 1.419230769230769  &  0.1192307692308  &  -  &  0.3308488681066 \\
+2      & 1.414222430685845  &  0.0050083385449  &  1.998884794855950  &  0.3436010289276 \\
+3      & 1.414213562400900  &  0.0000088682849  &  1.99999884693549  &  0.3313422718407 \\
+4      & 1.414213562373095  &  0.0000000000278   & - & 0.3070357228813 \\
+5      & 1.414213562373095  &  0.0000000000001 & - & - \\
+    \hline
+    \end{tabular}
+\end{center}
+\subsubsection{Segunda función}\label{sec:NR2}
+La cota de error de 1*10$^-5$ se alcanza en la iteración 22.
+
+\begin{center}
+\begin{tabular}{| c | l | c | c | c |}
+    \hline
+    Iteración & Raíz & Error absoluto & P & $\lambda$ \\ \hline
+    0      & 1.3  &  -  & -  &  - \\
+    1      & 1.2667030269975548  &  0.0332969730024  &  -  & 0.5840425428752 \\
+    2      & 1.2444875826804822  &  0.0222154443171  &  1.0003284131316479  & 0.5741837912249    \\
+    3      & 1.2296676055002955  &  0.0148199771802  &  1.0003951890897809  & 0.5639385154978  \\
+    4      & 1.2197827439940332  &  0.0098848615063  &  1.0003423545349588  &  0.5536087395106 \\
+    5      & 1.2131904976100731  &  0.0065922463840  &  1.0002634920672935  & 0.5433321091643  \\
+    6      & 1.2087945762524184  &  0.0043959213577  &  1.000191394864956  & 0.5331735905337  \\
+    7      & 1.205863462212570  &  0.0029311140398  &  1.000134603517015  &  0.5231644683496 \\
+    8      & 1.203909159546321  &  0.0019543026662  &  1.0000928861553313  & 0.5133197424318 \\
+    9      & 1.202606189050995  &  0.0013029704953  &  1.000134603517015 &  0.5036462015419 \\
+    10      & 1.201737496290331  &  0.0008686927607  & 1.000092886155331   & 0.4941463233054 \\
+    11      & 1.201158347351234  &  0.0005791489391  & 1.000063254168274    & 0.4848202288857   \\
+    12      & 1.200772238893809  &  0.0003861084574  &  1.000042925757988  &  0.4756666657600 \\
+    13      & 1.200514829825312  &  0.0002574090685  &  1.000028472538576  &  0.4666842992485 \\
+    14      & 1.200343220974835  &  0.0001716088505  &  1.000025676516566  &  0.4578690074111 \\
+    15      & 1.200228817268445  &  0.0001144037064  &  0.999992555631153  &  0.4492219227393 \\
+    16      & 1.200152548369470  &  0.0000762688990  &  1.000087609684947  &  0.4407352319786 \\
+    17      & 1.200101710111121  &  0.0000508382583  &  0.999960422007927  & 0.4324638807595 \\
+    18      & 1.200067838537330  &  0.0000338715738  &  1.000364554349367 & 0.4242965654959  \\
+    19      & 1.200045237844259  &  0.0000226006931  &  1.001126693325435  & 0.4160998936310   \\
+    20      & 1.200030199938266  &  0.0000150379060  &  0.99636149676087   &  0.4090714961235 \\
+    21      & 1.200020162558638  &  0.0000100373796  &  1.006947516566009  &  0.4009601848722 \\
+    22      & 1.200013454885730  &  0.0000067076729  &  0.992271845032345  &  0.4069620508520 \\
+    23      & 1.200010227159997  &  0.0000032277257  &  0.997046473577868  &  0.3706968902561 \\
+    24      & 1.200008364962604  &  0.0000018621974  &  1.814784472166537  &  0.4342436794672 \\
+    25      & 1.200005581354714  &  0.0000027836079  &  0.751934275902921  &  0.5090745360638 \\
+    26      & 1.200011833933903  &  0.0000062525792  &  -  &  0.2228907181906 \\
+    27      & 1.200009052254046  &  0.0000027816799  & 2.013096702168228 & - \\
+    28      & 1.200004298329087  &  0.0000047539250  & - & - \\
+    29      & 1.200004298329087  &  0.0000000000001  & - & - \\
+   \hline
+    \end{tabular}
+\end{center}
+
+\subsubsection{Tercera función}\label{sec:NR3}
+En la iteración 4 se llega a la cota 1*10$^-5$
+\begin{center}
+\begin{tabular}{| c | l | c | c | c |}
+    \hline
+    Iteración & Raíz & Error absoluto & P & $\lambda$ \\ \hline
+    0      & 1.3  &  -  &  -  &  - \\
+    1      & 1.594117647058823  &  0.2941176470588  &  -  &  - \\
+    2      & 1.492821654209128  &  0.1012959928497  &  2.482862983225440  &  - \\
+    3      & 1.500002960343984  &  0.0071813061349  &  -  &  0.622436853025493 \\
+    4      & 1.499999999999999  &  0.0000029603440 & 2.502817334 & - \\
+    5      & 1.5  & 0.0000000000001 & - & -\\
+    \hline
+    \end{tabular}
+\end{center}
+
+\subsection{Newton-Raphson modificado}\label{sec:nrm}
+
+El método de Newton-Raphson modificado le aplica el método de Newton-Raphson a la función $\mu =\frac{f (x)}{f'(x)}$
+, obteniendo la derivada con la función derivar (biblioteca `Sympy`) y halla la raíz a partir de una semilla inicial, iterando la siguiente sucesión
+$
+\quad p_{n+1}=p_n-\frac{f(p_n).f'(p_n)} {f'(p_n)^2-f(p_n).f''(p_n)}
+ $ hasta que $
+p_{n}-p_{n-1} < \mbox{$\epsilon$}
+$
+\\\\Los resultados obtenidos fueron los siguientes:
+
+\subsubsection{Primera función}\label{sec:NRM1}
+En la iteración 3 se llega a la cota 1*10$^-5$
+\begin{center}
+\begin{tabular}{| c | l | c | c | c |}
+    \hline
+        Iteración & Raíz & Error absoluto & P & $\lambda$ \\ \hline
+0      & 1.3  &  -  &  -  &  - \\
+1      & 1.409214092140921  &  0.1092140921409  &  -  &  0.8262422088622 \\
+2      & 1.414204694115956  &  0.0049906019750  &  2.052282054261022  &  0.5728418964318\\
+3      & 1.414213562345289  &  0.0000088682293  &  2.001117548786138  & 0.8398379433518\\
+4      & 1.414213562373095   &  0.0000000000278   & - & - \\
+5      & 1.414213562373095  &  0.0000000000001  & - & - \\
+    \hline
+    \end{tabular}
+\end{center}
+
+\subsubsection{Segunda función}\label{sec:NRM2}
+Ambas cotas de error se alcanzan en la última iteración.
+\begin{center}
+\begin{tabular}{| c | l | c | c | c |}
+    \hline
+	Iteración & Raíz & Error absoluto & P & $\lambda$ \\ \hline
+0      & 1.3  &  -  	    &  -	       &  - \\
+1      & 1.199945787479404  &  0.1000542125206 &  -  		     &  - \\
+2      & 1.200000195922735  &  0.0000544084433 &  0.843540380001885  &  - \\
+3      & 1.200003265168441  &  0.0000324557617 & - & - \\
+4      & 1.200003265168441  &  0.0000000000001 & - & - \\
+    \hline
+    \end{tabular}
+\end{center}
+
+\subsubsection{Tercera función}\label{sec:NRM3}
+En la iteración 5 se llega a la cota 1*10$^-5$
+\begin{center}
+\begin{tabular}{| c | l | c | c | c |}
+    \hline
+        Iteración & Raíz & Error absoluto & P & $\lambda$ \\ \hline
+0      & 1.3  &  -  &  -  &  - \\
+1      & 1.403030303030303  &  0.1030303030303  &  -  &  - \\   % PONER DATOS A MANO?
+2      & 1.486431596392994  &  0.0834012933627  &  -  &  - \\
+3      & 1.499960091346067  &  0.0135284949531  &  -  &  - \\
+4      & 1.499999999998983  &  0.0000399086529  &  -  &  - \\
+5      & 1.5  &  0.0000000000010 & - & - \\
+6      & 1.5  &  0.0000000000001 & - & - \\
+    \hline
+    \end{tabular}
+\end{center}
+En esta tabla los valores de P y $\lambda$ no fueron escritos en la tabla ya que no son representativos.\\
+
+\subsection{Secante}\label{sec:secante}
+El método de la secante halla la raíz a partir de dos semillas iniciales, iterando la siguiente sucesión
+$\quad p_{n} =p_{n-1}-\frac{f (p_{n-1})*(p_{n-1}-p_{n-2})}{f(p_{n-1})-f(p_{n-2})}$ hasta que $p_{n}-p_{n-1} < \mbox{cota de error}$
+\\
+
+Los resultados obtenidos fueron los siguientes:
+\subsubsection{Primera función}\label{sec:sec1}
+
+En la iteración 6 se llega a la cota $1*10^-5$
+
+\begin{center}
+\begin{tabular}{| c | l | c | c | c |}
+    \hline
+    Iteración & Raíz & Error absoluto & P & $\lambda$ \\ \hline
+    0      & 1.0  &  -  &  -  &  - \\
+    1      & 1.384615384615384  &  0.6000000000000  &  -  &  0.1563104012176675 \\
+    2      & 1.419354838709677  &  0.3846153846154  &  0.790259379956948  &  0.2134778449293 \\
+    3      & 1.414159292035398  &  0.0347394540943  &  2.401693274103336  &  0.5108859467482 \\
+    4      & 1.414213463902154  &  0.0051955466743  &  1.382772197436786  &  0.2017368903095 \\
+    5      & 1.414213562374984  &  0.0000541718668  &  1.721244675137339  &  - \\
+    6      & 1.414213562373095  &  0.0000000000019  & - & - \\
+    7      & 1.414213562373095  &  0.0000000000001  & - & - \\
+    \hline
+    \end{tabular}
+\end{center}
+\newpage
+\subsubsection{Segunda función}\label{sec:sec2}
+En la iteración 32 se llega a la cota $1*10^-5$
+
+\begin{center}
+\begin{tabular}{| c | l | c | c | c |}
+    \hline
+    Iteración & Raíz & Error absoluto & P & $\lambda$ \\ \hline
+    0      & 1.0  &  -  &  -  &  - \\
+    1      & 1.0655021834061167  &  0.6000000000000   &  -   &  0.8467397249811548 \\
+    2      & 1.0943398952179324  &  0.0655021834061   & 0.6822493999623683  &  0.6203750761271453 \\
+    3      & 1.1215850325280734  &  0.0288377118118   & 1.1788284076607312  &  0.6890742081278114 \\
+    4      & 1.1404772887106263  &  0.0272451373101   & 0.9406337020961544  &  0.6539055725397107 \\
+    5      & 1.1551937245338697  &  0.0188922561826   & 1.0234194966703822  &  0.6594108232964085 \\
+    6      & 1.1661565358156876  &  0.0147164358232   & 0.9905837033078105  &  0.6495651812114491 \\
+    7      & 1.1744671484356637  &  0.0109628112818   & 1.00321674907692    &  0.6456225328540476 \\
+    8      & 1.1807264667044532  &  0.0083106126200   & 0.9984496113168446  &  0.6394682097067341 \\
+    9      & 1.1854534082642374  &  0.0062593182688   & 1.0003670535265086  &  0.6342041289457003 \\
+    10      & 1.1890198994831873  &  0.0047269415598  & 0.999690008069762   &  0.6286523199835875 \\
+    11      & 1.19171200301767  &  0.0035664912189    & 0.9999946616786058  &  0.6232658182268617 \\
+    12      & 1.1937438805214264  &  0.0026921035345  & 0.9999098351538268  &  0.617874169284884 \\
+    13      & 1.195277583160919  &  0.0020318775038   & 0.9999652747973031  &  0.612543804779906 \\
+    14      & 1.1964352549762844  &  0.0015337026395  & 0.9999628690528302  &  0.6072504309074059 \\
+    15      & 1.197309112780888  &  0.0011576718154   & 0.9999750775947167  &  0.6020033891309672 \\
+    16      & 1.197968742660849  &  0.0008738578046   & 0.9999805570320236  &  0.5967998284934505 \\
+    17      & 1.1984666682043323  &  0.0006596298800  & 0.9999797754884048  &  0.5916404624070448 \\
+    18      & 1.1988425329007377  &  0.0004979255435  & 1.0000077665745137  &  0.58652592723655 \\
+    19      & 1.1991262601453252  &  0.0003758646964  & 1.0000015329427763  &  0.5814511307833875 \\
+    20      & 1.1993404372360148  &  0.0002837272446  & 0.9998282155157043  &  0.5764212145231957 \\
+    21      & 1.1995021126720737  &  0.0002141770907  & 1.0003565189861265  &  0.5714626544598937 \\
+    22      & 1.1996241562355223  &  0.0001616754361  & 0.9992123491516923  &  0.5664634415286837 \\
+    23      & 1.199716287429286  &  0.0001220435634   & 1.0016574647515328  &  0.5616869332240114 \\
+    24      & 1.1997858306793374  &  0.0000921311938  & 0.9938606505484686  &  0.5565718177518334 \\
+    25      & 1.1998383355364535  &  0.0000695432501  & 1.0101641889403568  &  0.5527067125191004 \\
+    26      & 1.1998779580183785  &  0.0000525048571  & 0.9901439308813552  &  0.5463939087287355 \\
+    27      & 1.1999079106133839  &  0.0000396224819  & 1.0244087554052648  &  0.5431547508922261 \\
+    28      & 1.1999304889638724  &  0.0000299525950  & 0.9377128318574854  &  0.5348136432285352 \\
+    29      & 1.1999475560634543  &  0.0000225783505  & 1.0499189034023424  &  0.5396483704365653 \\
+    30      & 1.199960369357061  &  0.0000170670996  &  0.6177651656653215  &  0.52805165121530  \\
+    31      & 1.199970162374318  &  0.0000128132936  &  0.6309297535714574  &  0.58309716682340 \\
+    32      & 1.199977547272577  &  0.0000097930173  &  0.937712831857485   &  0.42488260343370 \\
+    33      & 1.199983750587115  &  0.0000073848983  &  1.049918903402342   &  0.68015543110600 \\
+    34      & 1.199987568011446  &  0.0000062033145  &  0.617765165665321   &  0.67248844926700 \\
+    35      & 1.199991385435777  &  0.0000038174243  &  -  &  - \\
+    36      & 1.200002837708769  &  0.0000038174243  &  0.630929753571457  &  - \\
+    37      & 1.200025742254755  &  0.0000114522730  &  -  &  - \\
+    38      & 1.200004315421414  &  0.0000214268333  & - & - \\
+    39      & 1.200004315421414  &  0.0000000000001  & - & - \\
+    \hline
+\end{tabular}
+\end{center}
+
+
+\newpage
+\subsubsection{Tercera función}\label{sec:sec3}
+En la iteración 7 se llega a la cota $1*10^-5$
+\begin{center}
+\begin{tabular}{| c | l | c | c | c |}
+    \hline
+    Iteración & Raíz & Error absoluto & P & $\lambda$ \\ \hline
+    0      & 1.0  &  -  &  -  &  - \\
+    1      & 1.394130271809281  &  0.6000000000000  &  -  &  0.832698274848764 \\
+    2      & 1.876493002180122  &  0.3941302718093  &  -  &  0.501813015208556 \\
+    3      & 1.549246841462836  &  0.4823627303708  &  -  &  0.186461989578455 \\
+    4      & 1.452393135816548  &  0.3272461607173  &  0.583076191756392  &  0.187216450043600 \\
+    5      & 1.500015379708404  &  0.0968537056463  &  -  &  - \\
+    6      & 1.499999859984630  &  0.0476222438919  &  0.586392814927282  &  - \\
+    7      & 1.500000000000000  &  0.0000001400154  & - & - \\
+    8      & 1.5  &  0.0000000000001  & - & - \\
+    \hline
+\end{tabular}
+\end{center}
+
+
+\section{Comparación de resultados}\label{sec:comparacion_resultados}
+\subsubsection{Primera función}\label{sec:CR1}
+
+Usando la biblioteca `SciPy`, las raíces halladas fueron:
+\begin{itemize}
+    \item[$*$]Usando bisección:  1.4142135623715149+-0.000000000000001
+    \item[$*$]Usando Newton Raphson:  1.414213562373095+-0.000000000000001
+\end{itemize}
+
+Los resultados obtenidos con las funciones programadas son congruentes con estos últimos, viendo que la convergencia más rápida se encontró con los métodos de Newton-Raphson, luego el método de la secante y por último el método de bisección.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{raiz f1.png}
+\caption{\label{fig:raizf1}Valor de la raíz según iteración.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{lambda f1.png}
+    \caption{\label{fig:lambdaf1}Valor de $\lambda$ según iteración.}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{alfa f1.png}
+    \caption{\label{fig:alfaf1}Valor de P según iteración.}
+\end{figure}
+
+Podemos ver como los valores de P están de acuerdo con lo que se esperaba en base a la teoría, mostrando una convergencia lineal para la bisección, una cuadrática para los métodos Newton-Raphson y Newton-Raphson modificado y una convergencia supra-lineal para el método de la secante.
+
+\subsubsection{Segunda función}\label{sec:CR2}
+
+Usando la biblioteca 'SciPy', las raíces halladas fueron:
+\begin{itemize}
+    \item[$*$]Usando bisección:   1.2000045776367188+-0.000000000000001
+    \item[$*$]Usando Newton Raphson:  1.2000066214794778+-0.000000000000001
+\end{itemize}
+
+Los resultados obtenidos con las funciones programadas son congruentes con estos últimos para la tolerancia $1*10^-5$, no así para la cota de error $1*10^-13$, se estima que esto se debe a como esta programado el método de la biblioteca. Para esta función, claramente el método de Newton-Raphson modificado fue el que mostró una convergencia más acelerada. 
+
+Analizando la diferencia en iteraciones para las dos cotas de error, se observa que prácticamente necesitaron la misma cantidad.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{raiz f2.png}
+    \caption{\label{fig:raizf2}Valor de la raíz según iteración.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{lambda f2.png}
+    \caption{\label{fig:lambdaf2}Valor de $\lambda$ según iteración.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{alfa f2.png}
+    \caption{\label{fig:alfaf2}Valor de P según iteración.}
+\end{figure}
+
+%BOCA LA CONCHA DE TU MADREEEEEEEEEEE
+\newpage
+
+\subsubsection{Tercera función}\label{sec:CR3}
+
+Usando la biblioteca `SciPy`, las raíces halladas fueron:
+\begin{itemize}
+    \item[$*$]Usando bisección:   1.500000000000000+-0.000000000000001
+    \item[$*$]Usando Newton Raphson:  1.500000000000000+-0.000000000000001
+\end{itemize}
+
+Los resultados obtenidos con las funciones programadas son congruentes con estos últimos, viendo que la convergencia más rápida se encontró con los métodos de Newton-Raphson, luego el método de la secante y por último el método de bisección. 
+
+Algo que notamos en esta función para el método de bisección es que llega al valor correcto de la raíz en la segunda iteración, pero como el criterio de corte es la diferencia entre iteraciones, no sería correcto el corte en esa segunda iteración.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{raiz f3.png}
+    \caption{\label{fig:raizf3}Valor de la raíz según iteración.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{lambda f3.png}
+    \caption{\label{fig:lambdaf3}Valor de $\lambda$ según iteración.}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{alfa f3.png}
+    \caption{\label{fig:alfaf3}Valor de P según iteración.}
+\end{figure}
+
+%BOCA LA CONCHA DE TU MADRE
+\newpage
+
+\section{Conclusiones}\label{sec:conclusiones} % agregar algo sobre los cambios
+
+A modo de conclusión de este trabajo práctico, se destaca que la convergencia al resultado con la tolerancia dada con menos iteraciones fue utilizando el método de Newton-Raphson modificado, de acuerdo a la teoría. 
+
+Algo interesante que observamos fue que el método de la bisección converge siempre en la misma cantidad de iteraciones para una cota de error dada, comprobando en la práctica uno de los teoremas del método.
+
+Además, se encontraron dificultades para hallar el orden de convergencia P y la constante asintótica $\lambda$. Estimamos que una posible fuente de este inconveniente es el error de redondeo proveniente del uso de notación de punto flotante. Además, al trabajar con números muy cercanos entre si, el error tiende a aumentar al dividir por un número muy pequeño o multiplicando por uno muy grande, siendo estos cálculos necesarios para encontrar los valores que buscamos. Este error se podría llegar a reducir anidando las funciones, lo que provocaría una reducción en la cantidad de operaciones a realizar en algunos casos. 
+Otra fuente de error es que obtenemos el orden de convergencia vía una estimación y no vía un cálculo directo, es decir, le agregamos una incerteza más a un resultado con ya mucho error.
+
+Decidimos utilizar el promedio de los órdenes de convergencia P, para calcular el valor de la constante asintótica lambda y no el ultimo órden convergencia obtenido. Para algunas de las funciones dadas, el ultimo orden de convergencia obtenido se alejaba considerablemente del resto de los órdenes. Tomando la media podemos obtener un valor representativo del orden de convergencia a partir del cual calcular la constante asintótica que nos producirá menor error.
+ 
+Con respecto a la búsqueda de P y $\lambda$, teniendo en cuenta los posibles errores de cálculo despreciamos los valores claramente erróneos, pudiendo llegar a valores congruentes con la teoría. Para el orden de convergencia, despreciamos valores obtenidos que fueran mayores a 3 y menores a 0,3. Para la constante asintótica lambda, despreciamos valores mayores a 1 y menores a 0,15. 
+
+Sobre la función 3, con los métodos NR y NR modificado, elegimos modificar la semilla inicial a 1,3, ya que observamos que con la semilla dada era imposible la convergencia (mediante iteraciones encontramos que el intervalo de convergencia es aproximadamente 1,26 < semilla < 1,74). Nos pareció la decisión más adecuada elegir una semilla arbitrariamente dentro del intervalo de convergencia hallado para de esa manera mostrar el funcionamiento completo de los métodos.
+%BOCA LA CONCHA DE TU MADRE
+
+\section{Cambios}\label{sec:cambios}
+    \begin{itemize}
+	\item Se agregaron las columnas error, lambda y alfa a las tablas.
+        \item Se corrigieron los gráficos, agregando los nuevos.
+        \item Verificamos los resultados en excel, corroborando los valores obtenidos.
+        \item Modificamos las conclusiones, agregando las nuevas que surgieron durante la corrección
+    \end{itemize}
+
+\end{document}
